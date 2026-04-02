@@ -1,1 +1,1 @@
-# scottyunho.github.io
+# A portfolio site for Scott Yun Ho. Developed to match the aesthetic of old Pokemon games.
