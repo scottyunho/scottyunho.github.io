@@ -1,0 +1,341 @@
+/* ── PALETTE: pure black / white / 3 greys only ── */
+:root {
+  --black:  #111111;
+  --dark:   #333333;
+  --mid:    #888888;
+  --light:  #cccccc;
+  --white:  #f5f5f5;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; image-rendering: pixelated; }
+
+body {
+  background: var(--white);
+  font-family: 'Press Start 2P', monospace;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 12px;
+  overflow-x: hidden;
+}
+
+/* ── OUTER WRAPPER ── */
+.wrapper {
+  width: min(1000px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+/* ── STAGE: Tofu + bubbles ── */
+.stage {
+  width: 100%;
+  background: var(--white);
+  border: 3px solid var(--black);
+  border-bottom: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 160px;   /* side padding makes room for bubbles */
+  min-height: 340px;
+}
+
+/* ── SPEECH BUBBLES ── */
+.bubble-col {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.bubble-col-left  { left: 60px;  align-items: flex-start; }
+.bubble-col-right { right: 60px; align-items: flex-end; }
+
+.bubble {
+  background: var(--white);
+  border: 4px solid var(--black);
+  padding: 8px 11px;
+  font-size: 16px;
+  color: var(--black);
+  cursor: pointer;
+  position: relative;
+  line-height: 1.9;
+  width: 200px;
+  text-align: left;
+  animation: bob var(--d, 2.2s) steps(4, end) infinite;
+  animation-delay: var(--delay, 0s);
+  box-shadow: 4px 4px 0px var(--black);
+  image-rendering: pixelated;
+}
+/* inner inset line for pixel depth */
+.bubble::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 2px solid var(--light);
+  pointer-events: none;
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+.bubble:hover {
+  background: var(--black);
+  color: var(--white);
+  animation-play-state: paused;
+  box-shadow: 2px 2px 0px var(--dark);
+}
+.bubble:hover::before { border-color: var(--dark); }
+.bubble.active {
+  background: var(--dark);
+  color: var(--white);
+  box-shadow: 2px 2px 0px var(--black);
+}
+.bubble.active::before { border-color: var(--mid); }
+
+
+.bubble-col-left .bubble::after {
+  content: '';
+  position: absolute;
+  right: -15px;
+  bottom: 10px;
+  width: 0; height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 15px solid var(--black);
+}
+
+.bubble-col-right .bubble::after {
+  content: '';
+  position: absolute;
+  left: -15px;
+  bottom: 10px;
+  width: 0; height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 15px solid var(--black);
+}
+
+.bubble-label {
+  display: block;
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+/* ── TOFU ── */
+.tofu-wrap {
+  position: relative;
+  cursor: pointer;
+  animation: idle 2s steps(2, end) infinite;
+  flex-shrink: 0;
+  margin-top: 24px;
+}
+@keyframes idle {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+.tofu-wrap:active { animation: hop 0.3s steps(3, end) forwards; }
+@keyframes hop {
+  0%   { transform: translateY(0); }
+  40%  { transform: translateY(-20px); }
+  70%  { transform: translateY(-5px); }
+  100% { transform: translateY(0); }
+}
+.tofu-image { width: 200px; height: auto; display: block; image-rendering: pixelated; }
+
+/* floating emote */
+.tofu-emote {
+  position: absolute;
+  top: -28px; right: 0;
+  font-size: 20px;
+  font-family: 'Press Start 2P', monospace;
+  color: var(--black);
+  background: var(--white);
+  border: 2px solid var(--black);
+  padding: 2px 5px;
+  animation: bob 1.4s steps(2) infinite;
+  pointer-events: none;
+}
+
+/* ── DIALOGUE BOX ── */
+.dialogue-section {
+  width: 100%;
+  background: var(--white);
+  border: 3px solid var(--black);
+  border-top: 3px solid var(--black);
+}
+
+.dialogue-box {
+  background: var(--white);
+  border-bottom: 3px solid var(--black);
+  padding: 14px 20px 14px;
+  position: relative;
+  min-height: 100px;
+  transition: min-height 0.6s ease-in-out;
+}
+.dialogue-box.expanded {
+  min-height: 160px;
+}
+/* pixel corner squares */
+.dialogue-box::before,
+.dialogue-box::after {
+  content: '';
+  position: absolute;
+  width: 8px; height: 8px;
+  background: var(--black);
+  top: 4px;
+}
+.dialogue-box::before { left: 4px; }
+.dialogue-box::after  { right: 4px; }
+
+.speaker-tag {
+  font-size: 10px;
+  color: var(--black);
+  background: var(--light);
+  border: 2px solid var(--black);
+  padding: 3px 8px;
+  display: inline-block;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+.dialogue-text {
+  font-size: 10px;
+  line-height: 2.1;
+  color: var(--black);
+  min-height: 32px;
+  padding: 0 16px;
+}
+
+.cursor {
+  display: inline-block;
+  width: 7px; height: 11px;
+  background: var(--black);
+  margin-left: 2px;
+  vertical-align: middle;
+  animation: blink 0.55s steps(1) infinite;
+}
+@keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+
+.advance-arrow {
+  position: absolute;
+  bottom: 10px; right: 14px;
+  font-size: 8px;
+  color: var(--black);
+  cursor: pointer;
+  animation: ablink 0.5s steps(1) infinite;
+}
+@keyframes ablink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+
+
+
+/* ── CONTENT PANEL ── */
+.content-panel {
+  display: none;
+  padding: 12px 16px 14px;
+  background: var(--white);
+  animation: fadein 0.1s steps(2);
+}
+.content-panel.visible { display: block; }
+@keyframes fadein { from{opacity:0} to{opacity:1} }
+
+.skills-grid { 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 6px; 
+}
+.skill-tag {
+  background: var(--white);
+  border: 2px solid var(--black);
+  color: var(--black);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  padding: 5px 9px;
+  cursor: default;
+  transition: background 0.05s, color 0.05s;
+}
+.skill-tag:hover { background: var(--black); color: var(--white); }
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 8px;
+}
+.project-card {
+  height: 100%;
+  background: var(--white);
+  border: 3px solid var(--black);
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.05s;
+  display: grid;
+  grid-template-rows: 33% 47% 20%;
+}
+.project-card:hover { background: var(--light); }
+.project-title { 
+  font-size: 12px; 
+  color: var(--black); 
+  margin-bottom: 5px; 
+  line-height: 2; 
+  padding: 4px}
+.project-desc  { 
+  font-size: 8px; 
+  color: var(--dark);  
+  line-height: 1.9; 
+  padding: 4px}
+.project-tag   {
+  font-size: 8px; 
+  color: var(--dark);
+  border: 1px solid var(--dark);
+  display: inline-block; 
+  padding: 4px; 
+  line-height: 1.5;
+}
+
+.contact-links { 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 8px; 
+}
+.contact-link {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--white);
+  border: 3px solid var(--black);
+  color: var(--black);
+  text-decoration: none;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  padding: 8px 12px;
+  transition: background 0.05s, color 0.05s;
+}
+.contact-link:hover {
+   background: var(--black); 
+   color: var(--white); 
+  }
+
+.story-text { 
+  font-size: 10px; 
+  line-height: 2.3; 
+  color: var(--black); 
+}
+.story-text strong { color: var(--dark); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .stage { padding: 28px 120px; min-height: 300px; }
+  .bubble { width: 108px; font-size: 5px; }
+  .tofu-image { width: 140px; }
+}
+@media (max-width: 440px) {
+  .stage { padding: 20px 96px; }
+  .bubble { width: 88px; font-size: 5px; }
+}
+
+a {
+    text-decoration: none;
+}
